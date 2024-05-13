@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  server:
+    image: fjortegan/nginx-fpm
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/usr/share/nginx/html
+    links:
+      - fpm
+
+  fpm:
+    image: fjortegan/php-xdebug
+    volumes:
+      - ./src:/var/www/html
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: mariadb
+    volumes:
+      - ./db-data:/var/lib/mysql/
+    environment:
+      MYSQL_ROOT_PASSWORD: pestillo
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_ARBITRARY=1
+

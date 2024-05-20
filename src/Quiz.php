@@ -1,35 +1,31 @@
 <?php
 
 class Quiz {
-    private $preguntas;
-    
+    private $questions;
     public function __construct() {
-        $this->preguntas = array();
+        $this->questions = array();
     }
-
-    public function anadirPregunta($pregunta, $respuestaCorrecta) {
-        $this->preguntas[] = array('pregunta' => $pregunta, 'respuestaCorrecta' => $respuestaCorrecta);
+    public function addQuestion($question, $correctAnswer) {
+        $this->questions[] = array('question' => $question, 'correctAnswer' => $correctAnswer);
     }
-
-    public function calcularPuntuacion($respuestasUsuario) {
+    public function calculateScore($userAnswers) {
         $score = 0;
-
-        foreach ($this->preguntas as $index => $q) {
-            if (isset($respuestasUsuario[$index]) && $respuestasUsuario[$index] == $q['respuestaCorrecta']) {
+        foreach ($this->questions as $index => $q) {
+            $questionKey = "q" . ($index + 1);
+            if (isset($userAnswers[$questionKey]) && $userAnswers[$questionKey] == $q['correctAnswer']) {
                 $score++;
             }
         }
-
         return $score;
     }
-
-    public function mostrarErrores() {
-        $errores = array();
-
-        foreach ($this->preguntas as $index => $q) {
-            $errores[] = "Pregunta " . ($index + 1) . ": " . $q['pregunta'] . " - Respuesta correcta: " . $q['respuestaCorrecta'];
+    public function generateFeedback() {
+        $feedback = array();
+        foreach ($this->questions as $index => $q) {
+            $feedback[] = "Pregunta " . ($index + 1) . ": " . $q['question'] . " - Respuesta correcta: " . $q['correctAnswer'];
         }
-
-        return $errores;
+        return $feedback;
+    }
+    public function getCorrectAnswer($index) {
+        return $this->questions[$index]['correctAnswer'];
     }
 }
